@@ -1,0 +1,28 @@
+name: Experimental continuous integration
+on: [ push, pull_request ]
+
+jobs:
+    test:
+        name: Test - PHP ${{matrix.php-version}} - OS ${{matrix.os}}
+        runs-on: ${{matrix.os}}
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: [ '8.1' ]
+                os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+            -   name: Install dependencies
+                run: composer update --ignore-platform-req php
+            -   name: Setup problem matchers for PHP
+                run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+            -   name: Setup problem matchers for PHPUnit
+                run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+            -   name: Run tests
+                run: bin/phpunit

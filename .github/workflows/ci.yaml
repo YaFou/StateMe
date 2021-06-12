@@ -1,0 +1,53 @@
+name: Continuous integration
+on: [ push, pull_request ]
+
+jobs:
+    test:
+        name: Test - PHP ${{matrix.php-version}} - OS ${{matrix.os}}
+        runs-on: ${{matrix.os}}
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: [ '8.0' ]
+                os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+            -   name: Install dependencies
+                run: composer update
+            -   name: Setup problem matchers for PHP
+                run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+            -   name: Setup problem matchers for PHPUnit
+                run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+            -   name: Run tests
+                run: bin/phpunit
+
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.0
+                    tools: cs2pr
+            -   name: Install dependencies
+                run: composer update
+            -   name: Lint
+                run: vendor/bin/phpcs --report=checkstyle | cs2pr
+            -   name: Static analysis
+                run: vendor/bin/psalm --output-format=github
+            -   name: Lint container
+                run: bin/console lint:container
+            -   name: Lint Twig files
+                run: bin/console lint:twig
+            -   name: Lint YAML files
+                run: bin/console lint:yaml config
