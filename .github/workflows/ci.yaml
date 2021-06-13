@@ -45,6 +45,11 @@ jobs:
                     tools: cs2pr
             -   name: Install dependencies
                 run: composer update
+            -   name: Warmup caches
+                run: |
+                    bin/console cache:clear
+                    bin/console cache:clear --env test
+                    bin/console cache:clear --env prod
             -   name: Lint
                 run: vendor/bin/phpcs --report=checkstyle | cs2pr
             -   name: Static analysis
