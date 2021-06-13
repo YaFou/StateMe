@@ -26,7 +26,7 @@ class Incident
         return $this->name;
     }
 
-    public function setName(string $name): Incident
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
@@ -37,7 +37,7 @@ class Incident
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): Incident
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
@@ -48,7 +48,7 @@ class Incident
         return $this->description;
     }
 
-    public function setDescription(?string $description): Incident
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
         return $this;

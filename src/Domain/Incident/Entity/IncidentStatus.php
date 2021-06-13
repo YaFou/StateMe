@@ -17,7 +17,7 @@ class IncidentStatus
         private string $icon,
         #[ORM\Column(length: 8)]
         private string $color,
-        #[ORM\Column(type: 'boolean')]
+        #[ORM\Column(name: '`default`', type: 'boolean')]
         private bool $default = false
     ) {
     }
@@ -27,7 +27,7 @@ class IncidentStatus
         return $this->name;
     }
 
-    public function setName(string $name): IncidentStatus
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
@@ -38,7 +38,7 @@ class IncidentStatus
         return $this->icon;
     }
 
-    public function setIcon(string $icon): IncidentStatus
+    public function setIcon(string $icon): static
     {
         $this->icon = $icon;
         return $this;
@@ -49,7 +49,7 @@ class IncidentStatus
         return $this->color;
     }
 
-    public function setColor(string $color): IncidentStatus
+    public function setColor(string $color): static
     {
         $this->color = $color;
         return $this;
@@ -60,7 +60,7 @@ class IncidentStatus
         return $this->default;
     }
 
-    public function setDefault(bool $default): IncidentStatus
+    public function setDefault(bool $default): static
     {
         $this->default = $default;
         return $this;

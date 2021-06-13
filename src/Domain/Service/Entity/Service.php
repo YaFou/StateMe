@@ -23,7 +23,7 @@ class Service
         return $this->name;
     }
 
-    public function setName(string $name): Service
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
@@ -34,7 +34,7 @@ class Service
         return $this->url;
     }
 
-    public function setUrl(?string $url): Service
+    public function setUrl(?string $url): static
     {
         $this->url = $url;
         return $this;

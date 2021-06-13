@@ -1,0 +1,6 @@
+include:
+    - ../../template.yaml
+
+App\Domain\Incident\Entity\IncidentStatus:
+    incident-status (extends t_incident-status):
+        default: true

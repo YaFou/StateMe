@@ -1,0 +1,3 @@
+App\Domain\Incident\Entity\IncidentStatus:
+    t_incident-status (template):
+        __construct: [ name, icon, color ]

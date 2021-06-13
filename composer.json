@@ -21,6 +21,9 @@
         "symfony/yaml": "5.3.*"
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^6.6",
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "liip/test-fixtures-bundle": "^2.0.0-alpha4",
         "phpunit/phpunit": "^9.5",
         "psalm/plugin-phpunit": "^0.16.0",
         "psalm/plugin-symfony": "^2.3",
@@ -31,10 +34,12 @@
         "symfony/maker-bundle": "^1.31",
         "symfony/monolog-bundle": "^3.0",
         "symfony/phpunit-bridge": "^5.3",
+        "symfony/property-access": "5.3.*",
         "symfony/stopwatch": "^5.3",
         "symfony/twig-bundle": "^5.3",
         "symfony/var-dumper": "^5.3",
         "symfony/web-profiler-bundle": "^5.3",
+        "theofidry/alice-data-fixtures": "^1.4",
         "vimeo/psalm": "^4.7"
     },
     "config": {
