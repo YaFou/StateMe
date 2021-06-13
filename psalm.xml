@@ -12,12 +12,19 @@
         <directory name="src"/>
         <directory name="templates"/>
         <directory name="tests"/>
+
         <ignoreFiles>
             <file name="config/preload.php"/>
             <directory name="var"/>
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
+
+    <extraFiles>
+        <directory name="var/cache/dev/Symfony/Config"/>
+        <directory name="var/cache/test/Symfony/Config"/>
+        <directory name="var/cache/prod/Symfony/Config"/>
+    </extraFiles>
 
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
