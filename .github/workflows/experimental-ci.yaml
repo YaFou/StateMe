@@ -18,6 +18,18 @@ jobs:
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: ${{ matrix.php-version }}
+            -   name: Get Composer cache directory
+                id: composer-cache
+                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+            -   name: Cache dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ runner.os }}_${{ matrix.php-version }}_composer_${{ hashFiles('**/composer.json') }}
+                    restore-keys: |
+                        ${{ runner.os }}_${{ matrix.php-version }}_composer_
+                        ${{ runner.os }}_${{ matrix.php-version }}_
+                        ${{ runner.os }}_
             -   name: Install dependencies
                 run: composer update --ignore-platform-req php
             -   name: Setup problem matchers for PHP
@@ -27,6 +39,112 @@ jobs:
             -   name: Setup database
                 run: |
                     bin/console doctrine:database:create --env test
-                    bin/console doctrine:migrations:migrate --no-interaction --env test
+                    bin/console doctrine:schema:update --force --env test
+            -   name: Run tests
+                run: bin/phpunit
+
+    test_mysql:
+        name: Test with MySQL - PHP ${{matrix.php-version}}
+        runs-on: ubuntu-latest
+        needs: [ test ]
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: [ '8.1' ]
+        services:
+            mysql:
+                image: mysql:8.0
+                env:
+                    MYSQL_ALLOW_EMPTY_PASSWORD: false
+                    MYSQL_ROOT_PASSWORD: password
+                    MYSQL_DATABASE: stateme
+                ports:
+                    - 3306:3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+            DATABASE_URL: "mysql://root:password@127.0.0.1:3306/stateme"
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+            -   name: Get Composer cache directory
+                id: composer-cache
+                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+            -   name: Cache dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ubuntu-latest_${{ matrix.php-version }}_composer_${{ hashFiles('**/composer.json') }}
+                    restore-keys: |
+                        ubuntu-latest_${{ matrix.php-version }}_composer_
+                        ubuntu-latest_${{ matrix.php-version }}_
+                        ubuntu-latest_
+            -   name: Install dependencies
+                run: composer update --ignore-platform-req php
+            -   name: Setup problem matchers for PHP
+                run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+            -   name: Setup problem matchers for PHPUnit
+                run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+            -   name: Setup database
+                run: |
+                    bin/console doctrine:database:create --env test
+                    bin/console doctrine:schema:update --force --env test
+            -   name: Run tests
+                run: bin/phpunit
+
+    test_postgres:
+        name: Test with Postgres - PHP ${{matrix.php-version}}
+        runs-on: ubuntu-latest
+        needs: [ test ]
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: [ '8.1' ]
+        services:
+            postgres:
+                image: postgres:10.8
+                env:
+                    POSTGRES_USER: username
+                    POSTGRES_PASSWORD: password
+                    POSTGRES_DB: stateme
+                ports:
+                    - 5432:5432
+                options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+        env:
+            DATABASE_URL: "postgres://username:password@127.0.0.1:5432/stateme?charset=UTF-8"
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+            -   name: Get Composer cache directory
+                id: composer-cache
+                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+            -   name: Cache dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ubuntu-latest_${{ matrix.php-version }}_composer_${{ hashFiles('**/composer.json') }}
+                    restore-keys: |
+                        ubuntu-latest_${{ matrix.php-version }}_composer_
+                        ubuntu-latest_${{ matrix.php-version }}_
+                        ubuntu-latest_
+            -   name: Install dependencies
+                run: composer update --ignore-platform-req php
+            -   name: Setup problem matchers for PHP
+                run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+            -   name: Setup problem matchers for PHPUnit
+                run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+            -   name: Setup database
+                run: |
+                    bin/console doctrine:database:create --env test
+                    bin/console doctrine:schema:update --force --env test
             -   name: Run tests
                 run: bin/phpunit

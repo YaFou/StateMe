@@ -3,7 +3,6 @@
 namespace App\Domain\Shared;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
 trait IdTrait
 {
@@ -11,13 +10,13 @@ trait IdTrait
      * @psalm-suppress PropertyNotSetInConstructor
      */
     #[
-        ORM\Column(type: 'uuid'),
+        ORM\Column(type: 'integer'),
         ORM\Id,
-        ORM\GeneratedValue(strategy: 'UUID')
+        ORM\GeneratedValue
     ]
-    private UUID $id;
+    private int $id;
 
-    public function getId(): Uuid
+    public function getId(): int
     {
         return $this->id;
     }
