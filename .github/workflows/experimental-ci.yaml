@@ -24,5 +24,9 @@ jobs:
                 run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
             -   name: Setup problem matchers for PHPUnit
                 run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+            -   name: Setup database
+                run: |
+                    bin/console doctrine:database:create --env test
+                    bin/console doctrine:migrations:migrate --no-interaction --env test
             -   name: Run tests
                 run: bin/phpunit
