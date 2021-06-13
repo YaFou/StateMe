@@ -1,0 +1,5 @@
+include:
+    - ../../template.yaml
+
+App\Domain\Service\Entity\ServiceStatus:
+    service-status{1..2} (extends t_service-status):
