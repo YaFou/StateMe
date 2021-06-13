@@ -3,7 +3,9 @@
 namespace App\Domain\Incident\Entity;
 
 use App\Domain\Shared\IdTrait;
-use DateTimeImmutable;
+use ArrayIterator;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -11,46 +13,42 @@ class Incident
 {
     use IdTrait;
 
-    public function __construct(
-        #[ORM\Column]
-        private string $name,
-        #[ORM\Column(type: 'datetime_immutable')]
-        private DateTimeImmutable $createdAt,
-        #[ORM\Column(nullable: true)]
-        private ?string $description = null
-    ) {
+    #[ORM\OneToMany(mappedBy: 'incident', targetEntity: IncidentUpdate::class, cascade: ['all'], orphanRemoval: true)]
+    private Collection $updates;
+
+    public function __construct()
+    {
+        $this->updates = new ArrayCollection();
     }
 
-    public function getName(): string
+    public function addUpdate(IncidentUpdate $update): static
     {
-        return $this->name;
-    }
+        $this->updates->add($update);
 
-    public function setName(string $name): static
-    {
-        $this->name = $name;
         return $this;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getUpdates(): Collection
     {
-        return $this->createdAt;
+        return $this->updates;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    public function getLastUpdate(): ?IncidentUpdate
     {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
+        /** @var ArrayIterator $updates */
+        $updates = $this->updates->getIterator();
 
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
+        /** @psalm-suppress MixedArgumentTypeCoercion */
+        $updates->uasort(
+            fn(
+                IncidentUpdate $updateA,
+                IncidentUpdate $updateB
+            ) => $updateB->getUpdatedAt()->getTimestamp() - $updateA->getUpdatedAt()->getTimestamp()
+        );
 
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-        return $this;
+        /** @var Collection<int, IncidentUpdate> $sortedUpdates */
+        $sortedUpdates = new ArrayCollection($updates->getArrayCopy());
+
+        return $sortedUpdates->first() ?: null;
     }
 }
