@@ -7,11 +7,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ServiceService
 {
-    private EntityManagerInterface $manager;
-
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct(private EntityManagerInterface $manager)
     {
-        $this->manager = $manager;
     }
 
     public function createService(string $name, ?string $url = null): Service
@@ -33,7 +30,7 @@ class ServiceService
         return $service;
     }
 
-    public function removeService(Service $service): void
+    public function deleteService(Service $service): void
     {
         $this->manager->remove($service);
         $this->manager->flush();

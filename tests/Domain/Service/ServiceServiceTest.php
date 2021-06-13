@@ -42,6 +42,6 @@ class ServiceServiceTest extends TestCase
         $manager->expects(self::once())->method('flush');
 
         $serviceService = new ServiceService($manager);
-        $serviceService->removeService($service);
+        $serviceService->deleteService($service);
     }
 }
