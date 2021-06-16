@@ -6,6 +6,7 @@ use App\Domain\Incident\Entity\Incident;
 use App\Domain\Incident\Repository\IncidentStatusRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use LogicException;
 
 class IncidentService
@@ -17,6 +18,9 @@ class IncidentService
     ) {
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function createIncident(string $message, DateTimeImmutable $createdAt): Incident
     {
         if (null === $defaultStatus = $this->incidentStatusRepository->findDefaultIncidentStatus()) {

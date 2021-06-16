@@ -50,7 +50,11 @@ class IncidentServiceTest extends TestCase
         $incidentStatusRepository = $this->createMock(IncidentStatusRepository::class);
         $incidentStatusRepository->method('findDefaultIncidentStatus')->willReturn(null);
 
-        $service = new IncidentService($manager, $incidentStatusRepository, new IncidentUpdateService($manager));
+        $service = new IncidentService(
+            $manager,
+            $incidentStatusRepository,
+            $this->createMock(IncidentUpdateService::class)
+        );
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('No default incident status found');
         $service->createIncident('message', new DateTimeImmutable());
@@ -63,9 +67,12 @@ class IncidentServiceTest extends TestCase
         $manager->expects(self::once())->method('remove')->with($incident);
         $manager->expects(self::once())->method('flush');
 
-        $incidentStatusRepository = $this->createMock(IncidentStatusRepository::class);
+        $service = new IncidentService(
+            $manager,
+            $this->createMock(IncidentStatusRepository::class),
+            $this->createMock(IncidentUpdateService::class)
+        );
 
-        $service = new IncidentService($manager, $incidentStatusRepository, new IncidentUpdateService($manager));
         $service->deleteIncident($incident);
     }
 }
