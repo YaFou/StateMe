@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\Service\Dto\ServiceStatusDto;
 use App\Domain\Service\Entity\ServiceStatus;
 use App\Domain\Service\Repository\ServiceStatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,15 +13,11 @@ class ServiceStatusService
     {
     }
 
-    public function create(
-        string $name,
-        string $icon,
-        string $color,
-        bool $default = false
-    ): ServiceStatus {
-        $serviceStatus = new ServiceStatus($name, $icon, $color);
+    public function create(ServiceStatusDto $data): ServiceStatus
+    {
+        $serviceStatus = new ServiceStatus($data->name, $data->icon, $data->color);
 
-        if ($default) {
+        if ($data->default) {
             $this->setAsDefault($serviceStatus);
         } elseif (!$this->repository->count()) {
             $serviceStatus->setDefault(true);
@@ -41,25 +38,20 @@ class ServiceStatusService
         }
     }
 
-    public function update(
-        ServiceStatus $serviceStatus,
-        string $name,
-        string $icon,
-        string $color,
-        bool $default = false
-    ): ServiceStatus {
-        if ($serviceStatus->isDefault() !== $default) {
-            if ($default) {
+    public function update(ServiceStatus $serviceStatus, ServiceStatusDto $data): ServiceStatus
+    {
+        if ($serviceStatus->isDefault() !== $data->default) {
+            if ($data->default) {
                 $this->setAsDefault($serviceStatus);
             } elseif (null !== $firstServiceStatus = $this->repository->findFirst()) {
                 $firstServiceStatus->setDefault(true);
             }
         }
 
-        $serviceStatus->setName($name)
-            ->setIcon($icon)
-            ->setColor($color)
-            ->setDefault($default);
+        $serviceStatus->setName($data->name)
+            ->setIcon($data->icon)
+            ->setColor($data->color)
+            ->setDefault($data->default);
 
         $this->manager->flush();
 

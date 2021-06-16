@@ -2,6 +2,7 @@
 
 namespace App\Tests\Domain\Service;
 
+use App\Domain\Service\Dto\ServiceDto;
 use App\Domain\Service\Entity\Service;
 use App\Domain\Service\ServiceService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,8 +16,12 @@ class ServiceServiceTest extends TestCase
         $manager->expects(self::once())->method('persist')->with(new Service('name', 'url'));
         $manager->expects(self::once())->method('flush');
 
+        $data = new ServiceDto();
+        $data->name = 'name';
+        $data->url = 'url';
+
         $serviceService = new ServiceService($manager);
-        $service = $serviceService->create('name', 'url');
+        $service = $serviceService->create($data);
         self::assertEquals(new Service('name', 'url'), $service);
     }
 
@@ -25,9 +30,13 @@ class ServiceServiceTest extends TestCase
         $manager = $this->createMock(EntityManagerInterface::class);
         $manager->expects(self::once())->method('flush');
 
+        $data = new ServiceDto();
+        $data->name = 'new name';
+        $data->url = 'new url';
+
         $serviceService = new ServiceService($manager);
         $oldService = new Service('old name', 'old url');
-        $newService = $serviceService->update($oldService, 'new name', 'new url');
+        $newService = $serviceService->update($oldService, $data);
         self::assertSame($oldService, $newService);
         self::assertSame('new name', $newService->getName());
         self::assertSame('new url', $newService->getUrl());

@@ -3,6 +3,8 @@
 namespace App\Tests\Domain\Service;
 
 use App\Domain\Incident\Entity\IncidentUpdate;
+use App\Domain\Service\Dto\CreateServiceUpdateDto;
+use App\Domain\Service\Dto\UpdateServiceUpdateDto;
 use App\Domain\Service\Entity\Service;
 use App\Domain\Service\Entity\ServiceStatus;
 use App\Domain\Service\Entity\ServiceUpdate;
@@ -24,8 +26,11 @@ class ServiceUpdateServiceTest extends TestCase
             $oldStatus
         );
 
+        $data = new UpdateServiceUpdateDto();
+        $data->status = $newStatus;
+
         $service = new ServiceUpdateService($manager);
-        $newUpdate = $service->update($oldUpdate, $newStatus);
+        $newUpdate = $service->update($oldUpdate, $data);
         self::assertSame($oldUpdate, $newUpdate);
         self::assertSame($newStatus, $newUpdate->getStatus());
     }
@@ -42,8 +47,12 @@ class ServiceUpdateServiceTest extends TestCase
         $manager->expects(self::once())->method('persist')->with($expectedUpdate);
         $manager->expects(self::once())->method('flush');
 
+        $data = new CreateServiceUpdateDto();
+        $data->service = $service;
+        $data->status = $status;
+
         $serviceUpdateService = new ServiceUpdateService($manager);
-        $update = $serviceUpdateService->create($incident, $service, $status);
+        $update = $serviceUpdateService->create($incident, $data);
         self::assertEquals($expectedUpdate, $update);
     }
 

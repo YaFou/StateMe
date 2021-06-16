@@ -2,10 +2,13 @@
 
 namespace App\Tests\Domain\Incident;
 
+use App\Domain\Incident\Dto\CreateIncidentUpdateDto;
+use App\Domain\Incident\Dto\UpdateIncidentUpdateDto;
 use App\Domain\Incident\Entity\Incident;
 use App\Domain\Incident\Entity\IncidentStatus;
 use App\Domain\Incident\Entity\IncidentUpdate;
 use App\Domain\Incident\IncidentUpdateService;
+use App\Domain\Service\Dto\CreateServiceUpdateDto;
 use App\Domain\Service\Entity\Service;
 use App\Domain\Service\Entity\ServiceStatus;
 use App\Domain\Service\Entity\ServiceUpdate;
@@ -23,7 +26,7 @@ class IncidentUpdateServiceTest extends TestCase
         self::$incidentStatus = new IncidentStatus('name', 'icon', 'color');
     }
 
-    public function testUpdateIncident(): void
+    public function testCreate(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $expectedUpdate = new IncidentUpdate(
@@ -37,8 +40,13 @@ class IncidentUpdateServiceTest extends TestCase
 
         $serviceUpdateService = $this->createMock(ServiceUpdateService::class);
 
+        $data = new CreateIncidentUpdateDto();
+        $data->message = 'message';
+        $data->status = self::$incidentStatus;
+        $data->updatedAt = $updatedAt;
+
         $service = new IncidentUpdateService($manager, $serviceUpdateService);
-        $update = $service->updateIncident($incident, 'message', self::$incidentStatus, $updatedAt);
+        $update = $service->create($incident, $data);
         self::assertEquals($expectedUpdate, $update);
     }
 
@@ -70,22 +78,27 @@ class IncidentUpdateServiceTest extends TestCase
         $manager->expects(self::once())->method('persist')->with($expectedUpdate);
         $manager->expects(self::once())->method('flush');
 
+        $serviceUpdateDto1 = new CreateServiceUpdateDto();
+        $serviceUpdateDto1->service = $service1;
+        $serviceUpdateDto1->status = $serviceStatus1;
+
+        $serviceUpdateDto2 = new CreateServiceUpdateDto();
+        $serviceUpdateDto2->service = $service2;
+        $serviceUpdateDto2->status = $serviceStatus2;
+
         $serviceUpdateService = $this->createMock(ServiceUpdateService::class);
         $serviceUpdateService->expects(self::exactly(2))
             ->method('create')
-            ->withConsecutive(
-                [$expectedUpdate, $service1, $serviceStatus1],
-                [$expectedUpdate, $service2, $serviceStatus2]
-            );
+            ->withConsecutive([$expectedUpdate, $serviceUpdateDto1], [$expectedUpdate, $serviceUpdateDto2]);
+
+        $data = new CreateIncidentUpdateDto();
+        $data->message = 'message';
+        $data->status = self::$incidentStatus;
+        $data->updatedAt = $updatedAt;
+        $data->serviceUpdates = [[$service1, $serviceStatus1], [$service1, $serviceStatus2]];
 
         $service = new IncidentUpdateService($manager, $serviceUpdateService);
-        $update = $service->updateIncident(
-            $incident,
-            'message',
-            self::$incidentStatus,
-            $updatedAt,
-            [[$service1, $serviceStatus1], [$service1, $serviceStatus2]]
-        );
+        $update = $service->create($incident, $data);
         self::assertEquals($expectedUpdate, $update);
     }
 
@@ -106,12 +119,12 @@ class IncidentUpdateServiceTest extends TestCase
             new DateTimeImmutable()
         );
 
-        $newUpdate = $service->update(
-            $oldUpdate,
-            'new message',
-            self::$incidentStatus,
-            $newUpdatedAt = new DateTimeImmutable()
-        );
+        $data = new UpdateIncidentUpdateDto();
+        $data->message = 'new message';
+        $data->status = self::$incidentStatus;
+        $data->updatedAt = $newUpdatedAt = new DateTimeImmutable();
+
+        $newUpdate = $service->update($oldUpdate, $data);
 
         self::assertSame($oldUpdate, $newUpdate);
         self::assertSame('new message', $newUpdate->getMessage());

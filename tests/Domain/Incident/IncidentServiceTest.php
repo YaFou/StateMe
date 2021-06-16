@@ -2,6 +2,8 @@
 
 namespace App\Tests\Domain\Incident;
 
+use App\Domain\Incident\Dto\CreateIncidentDto;
+use App\Domain\Incident\Dto\CreateIncidentUpdateDto;
 use App\Domain\Incident\Entity\Incident;
 use App\Domain\Incident\Entity\IncidentStatus;
 use App\Domain\Incident\IncidentService;
@@ -33,13 +35,22 @@ class IncidentServiceTest extends TestCase
         $incidentStatusRepository = $this->createMock(IncidentStatusRepository::class);
         $incidentStatusRepository->method('findDefault')->willReturn(self::$incidentStatus);
 
+        $updateData = new CreateIncidentUpdateDto();
+        $updateData->message = 'message';
+        $updateData->status = self::$incidentStatus;
+        $updateData->updatedAt = $createdAt;
+
         $incidentUpdateService = $this->createMock(IncidentUpdateService::class);
         $incidentUpdateService->expects(self::once())
-            ->method('updateIncident')
-            ->with($expectedIncident, 'message', self::$incidentStatus, $createdAt);
+            ->method('create')
+            ->with($expectedIncident, $updateData);
+
+        $data = new CreateIncidentDto();
+        $data->message = 'message';
+        $data->createdAt = $createdAt;
 
         $service = new IncidentService($manager, $incidentStatusRepository, $incidentUpdateService);
-        $incident = $service->create('message', $createdAt);
+        $incident = $service->create($data);
         self::assertEquals($expectedIncident, $incident);
     }
 
@@ -55,9 +66,14 @@ class IncidentServiceTest extends TestCase
             $incidentStatusRepository,
             $this->createMock(IncidentUpdateService::class)
         );
+
+        $data = new CreateIncidentDto();
+        $data->message = 'message';
+        $data->createdAt = new DateTimeImmutable();
+
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('No default incident status found');
-        $service->create('message', new DateTimeImmutable());
+        $service->create($data);
     }
 
     public function testDelete(): void

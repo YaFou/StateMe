@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use App\Domain\Service\Dto\ServiceDto;
 use App\Domain\Service\Entity\Service;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -11,19 +12,19 @@ class ServiceService
     {
     }
 
-    public function create(string $name, ?string $url = null): Service
+    public function create(ServiceDto $data): Service
     {
-        $service = new Service($name, $url);
+        $service = new Service($data->name, $data->url);
         $this->manager->persist($service);
         $this->manager->flush();
 
         return $service;
     }
 
-    public function update(Service $service, string $name, ?string $url = null): Service
+    public function update(Service $service, ServiceDto $data): Service
     {
-        $service->setName($name)
-            ->setUrl($url);
+        $service->setName($data->name)
+            ->setUrl($data->url);
 
         $this->manager->flush();
 

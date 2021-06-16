@@ -3,8 +3,8 @@
 namespace App\Domain\Service;
 
 use App\Domain\Incident\Entity\IncidentUpdate;
-use App\Domain\Service\Entity\Service;
-use App\Domain\Service\Entity\ServiceStatus;
+use App\Domain\Service\Dto\CreateServiceUpdateDto;
+use App\Domain\Service\Dto\UpdateServiceUpdateDto;
 use App\Domain\Service\Entity\ServiceUpdate;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -14,17 +14,17 @@ class ServiceUpdateService
     {
     }
 
-    public function update(ServiceUpdate $update, ServiceStatus $status): ServiceUpdate
+    public function update(ServiceUpdate $update, UpdateServiceUpdateDto $data): ServiceUpdate
     {
-        $update->setStatus($status);
+        $update->setStatus($data->status);
         $this->manager->flush();
 
         return $update;
     }
 
-    public function create(IncidentUpdate $incident, Service $service, ServiceStatus $status): ServiceUpdate
+    public function create(IncidentUpdate $incident, CreateServiceUpdateDto $data): ServiceUpdate
     {
-        $update = new ServiceUpdate($incident, $service, $status);
+        $update = new ServiceUpdate($incident, $data->service, $data->status);
         $this->manager->persist($update);
         $this->manager->flush();
 

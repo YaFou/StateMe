@@ -2,6 +2,7 @@
 
 namespace App\Domain\Incident;
 
+use App\Domain\Incident\Dto\IncidentStatusDto;
 use App\Domain\Incident\Entity\IncidentStatus;
 use App\Domain\Incident\Repository\IncidentStatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,15 +13,11 @@ class IncidentStatusService
     {
     }
 
-    public function create(
-        string $name,
-        string $icon,
-        string $color,
-        bool $default = false
-    ): IncidentStatus {
-        $status = new IncidentStatus($name, $icon, $color);
+    public function create(IncidentStatusDto $data): IncidentStatus
+    {
+        $status = new IncidentStatus($data->name, $data->icon, $data->color);
 
-        if ($default) {
+        if ($data->default) {
             $this->setStatusAsDefault($status);
         } elseif (!$this->repository->count()) {
             $status->setDefault(true);
@@ -41,25 +38,20 @@ class IncidentStatusService
         }
     }
 
-    public function update(
-        IncidentStatus $incidentStatus,
-        string $name,
-        string $icon,
-        string $color,
-        bool $default = false
-    ): IncidentStatus {
-        if ($incidentStatus->isDefault() !== $default) {
-            if ($default) {
+    public function update(IncidentStatus $incidentStatus, IncidentStatusDto $data): IncidentStatus
+    {
+        if ($incidentStatus->isDefault() !== $data->default) {
+            if ($data->default) {
                 $this->setStatusAsDefault($incidentStatus);
             } elseif (null !== $firstIncidentStatus = $this->repository->findFirst()) {
                 $firstIncidentStatus->setDefault(true);
             }
         }
 
-        $incidentStatus->setName($name)
-            ->setIcon($icon)
-            ->setColor($color)
-            ->setDefault($default);
+        $incidentStatus->setName($data->name)
+            ->setIcon($data->icon)
+            ->setColor($data->color)
+            ->setDefault($data->default);
 
         $this->manager->flush();
 

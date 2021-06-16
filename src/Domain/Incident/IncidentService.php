@@ -2,9 +2,10 @@
 
 namespace App\Domain\Incident;
 
+use App\Domain\Incident\Dto\CreateIncidentDto;
+use App\Domain\Incident\Dto\CreateIncidentUpdateDto;
 use App\Domain\Incident\Entity\Incident;
 use App\Domain\Incident\Repository\IncidentStatusRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use LogicException;
@@ -21,7 +22,7 @@ class IncidentService
     /**
      * @throws NonUniqueResultException
      */
-    public function create(string $message, DateTimeImmutable $createdAt): Incident
+    public function create(CreateIncidentDto $data): Incident
     {
         if (null === $defaultStatus = $this->incidentStatusRepository->findDefault()) {
             throw new LogicException('No default incident status found');
@@ -29,7 +30,13 @@ class IncidentService
 
         $incident = new Incident();
         $this->manager->persist($incident);
-        $this->incidentUpdateService->updateIncident($incident, $message, $defaultStatus, $createdAt);
+
+        $updateData = new CreateIncidentUpdateDto();
+        $updateData->message = $data->message;
+        $updateData->status = $defaultStatus;
+        $updateData->updatedAt = $data->createdAt;
+        $this->incidentUpdateService->create($incident, $updateData);
+
         $this->manager->flush();
 
         return $incident;

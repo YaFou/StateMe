@@ -2,6 +2,7 @@
 
 namespace App\Tests\Domain\Service;
 
+use App\Domain\Service\Dto\ServiceStatusDto;
 use App\Domain\Service\Entity\ServiceStatus;
 use App\Domain\Service\Repository\ServiceStatusRepository;
 use App\Domain\Service\ServiceStatusService;
@@ -20,8 +21,13 @@ class ServiceStatusServiceTest extends TestCase
         $repository = $this->createMock(ServiceStatusRepository::class);
         $repository->method('count')->willReturn(1);
 
+        $data = new ServiceStatusDto();
+        $data->name = 'name';
+        $data->icon = 'icon';
+        $data->color = 'color';
+
         $service = new ServiceStatusService($manager, $repository);
-        $status = $service->create('name', 'icon', 'color');
+        $status = $service->create($data);
         self::assertEquals($expectedStatus, $status);
     }
 
@@ -35,8 +41,13 @@ class ServiceStatusServiceTest extends TestCase
         $repository = $this->createMock(ServiceStatusRepository::class);
         $repository->method('count')->willReturn(0);
 
+        $data = new ServiceStatusDto();
+        $data->name = 'name';
+        $data->icon = 'icon';
+        $data->color = 'color';
+
         $service = new ServiceStatusService($manager, $repository);
-        $status = $service->create('name', 'icon', 'color');
+        $status = $service->create($data);
         self::assertEquals($expectedStatus, $status);
     }
 
@@ -51,8 +62,14 @@ class ServiceStatusServiceTest extends TestCase
         $defaultStatus = new ServiceStatus('default', 'icon', 'color', true);
         $repository->method('findDefault')->willReturn($defaultStatus);
 
+        $data = new ServiceStatusDto();
+        $data->name = 'name';
+        $data->icon = 'icon';
+        $data->color = 'color';
+        $data->default = true;
+
         $service = new ServiceStatusService($manager, $repository);
-        $status = $service->create('name', 'icon', 'color', true);
+        $status = $service->create($data);
         self::assertEquals($expectedStatus, $status);
         self::assertFalse($defaultStatus->isDefault());
     }
@@ -67,8 +84,14 @@ class ServiceStatusServiceTest extends TestCase
         $repository = $this->createMock(ServiceStatusRepository::class);
         $repository->method('findDefault')->willReturn(null);
 
+        $data = new ServiceStatusDto();
+        $data->name = 'name';
+        $data->icon = 'icon';
+        $data->color = 'color';
+        $data->default = true;
+
         $service = new ServiceStatusService($manager, $repository);
-        $status = $service->create('name', 'icon', 'color', true);
+        $status = $service->create($data);
         self::assertEquals($expectedStatus, $status);
     }
 
@@ -79,14 +102,14 @@ class ServiceStatusServiceTest extends TestCase
 
         $repository = $this->createMock(ServiceStatusRepository::class);
 
+        $data = new ServiceStatusDto();
+        $data->name = 'new name';
+        $data->icon = 'new icon';
+        $data->color = 'new color';
+
         $service = new ServiceStatusService($manager, $repository);
         $oldStatus = new ServiceStatus('old name', 'old icon', 'old color');
-        $newStatus = $service->update(
-            $oldStatus,
-            'new name',
-            'new icon',
-            'new color'
-        );
+        $newStatus = $service->update($oldStatus, $data);
 
         self::assertSame($oldStatus, $newStatus);
         self::assertSame('new name', $newStatus->getName());
@@ -103,15 +126,15 @@ class ServiceStatusServiceTest extends TestCase
         $defaultStatus = new ServiceStatus('default', 'icon', 'color', true);
         $repository->method('findDefault')->willReturn($defaultStatus);
 
+        $data = new ServiceStatusDto();
+        $data->name = 'new name';
+        $data->icon = 'new icon';
+        $data->color = 'new color';
+        $data->default = true;
+
         $service = new ServiceStatusService($manager, $repository);
         $oldStatus = new ServiceStatus('old name', 'old icon', 'old color');
-        $newStatus = $service->update(
-            $oldStatus,
-            'new name',
-            'new icon',
-            'new color',
-            true
-        );
+        $newStatus = $service->update($oldStatus, $data);
 
         self::assertSame($oldStatus, $newStatus);
         self::assertSame('new name', $newStatus->getName());
@@ -129,14 +152,14 @@ class ServiceStatusServiceTest extends TestCase
         $firstStatus = new ServiceStatus('first', 'icon', 'color');
         $repository->method('findFirst')->willReturn($firstStatus);
 
+        $data = new ServiceStatusDto();
+        $data->name = 'new name';
+        $data->icon = 'new icon';
+        $data->color = 'new color';
+
         $service = new ServiceStatusService($manager, $repository);
         $oldStatus = new ServiceStatus('old name', 'old icon', 'old color', true);
-        $newStatus = $service->update(
-            $oldStatus,
-            'new name',
-            'new icon',
-            'new color'
-        );
+        $newStatus = $service->update($oldStatus, $data);
 
         self::assertSame($oldStatus, $newStatus);
         self::assertSame('new name', $newStatus->getName());

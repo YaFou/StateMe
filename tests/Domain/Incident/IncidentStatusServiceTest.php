@@ -2,6 +2,7 @@
 
 namespace App\Tests\Domain\Incident;
 
+use App\Domain\Incident\Dto\IncidentStatusDto;
 use App\Domain\Incident\Entity\IncidentStatus;
 use App\Domain\Incident\IncidentStatusService;
 use App\Domain\Incident\Repository\IncidentStatusRepository;
@@ -20,8 +21,13 @@ class IncidentStatusServiceTest extends TestCase
         $repository = $this->createMock(IncidentStatusRepository::class);
         $repository->method('count')->willReturn(1);
 
+        $data = new IncidentStatusDto();
+        $data->name = 'name';
+        $data->icon = 'icon';
+        $data->color = 'color';
+
         $service = new IncidentStatusService($manager, $repository);
-        $status = $service->create('name', 'icon', 'color');
+        $status = $service->create($data);
         self::assertEquals($expectedStatus, $status);
     }
 
@@ -35,8 +41,13 @@ class IncidentStatusServiceTest extends TestCase
         $repository = $this->createMock(IncidentStatusRepository::class);
         $repository->method('count')->willReturn(0);
 
+        $data = new IncidentStatusDto();
+        $data->name = 'name';
+        $data->icon = 'icon';
+        $data->color = 'color';
+
         $service = new IncidentStatusService($manager, $repository);
-        $status = $service->create('name', 'icon', 'color');
+        $status = $service->create($data);
         self::assertEquals($expectedStatus, $status);
     }
 
@@ -51,8 +62,14 @@ class IncidentStatusServiceTest extends TestCase
         $defaultStatus = new IncidentStatus('default', 'icon', 'color', true);
         $repository->method('findDefault')->willReturn($defaultStatus);
 
+        $data = new IncidentStatusDto();
+        $data->name = 'name';
+        $data->icon = 'icon';
+        $data->color = 'color';
+        $data->default = true;
+
         $service = new IncidentStatusService($manager, $repository);
-        $status = $service->create('name', 'icon', 'color', true);
+        $status = $service->create($data);
         self::assertEquals($expectedStatus, $status);
         self::assertFalse($defaultStatus->isDefault());
     }
@@ -67,8 +84,14 @@ class IncidentStatusServiceTest extends TestCase
         $repository = $this->createMock(IncidentStatusRepository::class);
         $repository->method('findDefault')->willReturn(null);
 
+        $data = new IncidentStatusDto();
+        $data->name = 'name';
+        $data->icon = 'icon';
+        $data->color = 'color';
+        $data->default = true;
+
         $service = new IncidentStatusService($manager, $repository);
-        $status = $service->create('name', 'icon', 'color', true);
+        $status = $service->create($data);
         self::assertEquals($expectedStatus, $status);
     }
 
@@ -79,14 +102,14 @@ class IncidentStatusServiceTest extends TestCase
 
         $repository = $this->createMock(IncidentStatusRepository::class);
 
+        $data = new IncidentStatusDto();
+        $data->name = 'new name';
+        $data->icon = 'new icon';
+        $data->color = 'new color';
+
         $service = new IncidentStatusService($manager, $repository);
         $oldStatus = new IncidentStatus('old name', 'old icon', 'old color');
-        $newStatus = $service->update(
-            $oldStatus,
-            'new name',
-            'new icon',
-            'new color'
-        );
+        $newStatus = $service->update($oldStatus, $data);
 
         self::assertSame($oldStatus, $newStatus);
         self::assertSame('new name', $newStatus->getName());
@@ -103,15 +126,15 @@ class IncidentStatusServiceTest extends TestCase
         $defaultStatus = new IncidentStatus('default', 'icon', 'color', true);
         $repository->method('findDefault')->willReturn($defaultStatus);
 
+        $data = new IncidentStatusDto();
+        $data->name = 'new name';
+        $data->icon = 'new icon';
+        $data->color = 'new color';
+        $data->default = true;
+
         $service = new IncidentStatusService($manager, $repository);
         $oldStatus = new IncidentStatus('old name', 'old icon', 'old color');
-        $newStatus = $service->update(
-            $oldStatus,
-            'new name',
-            'new icon',
-            'new color',
-            true
-        );
+        $newStatus = $service->update($oldStatus, $data);
 
         self::assertSame($oldStatus, $newStatus);
         self::assertSame('new name', $newStatus->getName());
@@ -129,14 +152,14 @@ class IncidentStatusServiceTest extends TestCase
         $firstStatus = new IncidentStatus('first', 'icon', 'color');
         $repository->method('findFirst')->willReturn($firstStatus);
 
+        $data = new IncidentStatusDto();
+        $data->name = 'new name';
+        $data->icon = 'new icon';
+        $data->color = 'new color';
+
         $service = new IncidentStatusService($manager, $repository);
         $oldStatus = new IncidentStatus('old name', 'old icon', 'old color', true);
-        $newStatus = $service->update(
-            $oldStatus,
-            'new name',
-            'new icon',
-            'new color'
-        );
+        $newStatus = $service->update($oldStatus, $data);
 
         self::assertSame($oldStatus, $newStatus);
         self::assertSame('new name', $newStatus->getName());
