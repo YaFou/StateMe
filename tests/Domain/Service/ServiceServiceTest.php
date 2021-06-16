@@ -9,31 +9,31 @@ use PHPUnit\Framework\TestCase;
 
 class ServiceServiceTest extends TestCase
 {
-    public function testCreateService(): void
+    public function testCreate(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $manager->expects(self::once())->method('persist')->with(new Service('name', 'url'));
         $manager->expects(self::once())->method('flush');
 
         $serviceService = new ServiceService($manager);
-        $service = $serviceService->createService('name', 'url');
+        $service = $serviceService->create('name', 'url');
         self::assertEquals(new Service('name', 'url'), $service);
     }
 
-    public function testUpdateService(): void
+    public function testUpdate(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $manager->expects(self::once())->method('flush');
 
         $serviceService = new ServiceService($manager);
         $oldService = new Service('old name', 'old url');
-        $newService = $serviceService->updateService($oldService, 'new name', 'new url');
+        $newService = $serviceService->update($oldService, 'new name', 'new url');
         self::assertSame($oldService, $newService);
         self::assertSame('new name', $newService->getName());
         self::assertSame('new url', $newService->getUrl());
     }
 
-    public function testDeleteService(): void
+    public function testDelete(): void
     {
         $service = new Service('old name', 'old url');
 
@@ -42,6 +42,6 @@ class ServiceServiceTest extends TestCase
         $manager->expects(self::once())->method('flush');
 
         $serviceService = new ServiceService($manager);
-        $serviceService->deleteService($service);
+        $serviceService->delete($service);
     }
 }

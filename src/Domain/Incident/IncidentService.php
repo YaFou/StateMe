@@ -21,9 +21,9 @@ class IncidentService
     /**
      * @throws NonUniqueResultException
      */
-    public function createIncident(string $message, DateTimeImmutable $createdAt): Incident
+    public function create(string $message, DateTimeImmutable $createdAt): Incident
     {
-        if (null === $defaultStatus = $this->incidentStatusRepository->findDefaultIncidentStatus()) {
+        if (null === $defaultStatus = $this->incidentStatusRepository->findDefault()) {
             throw new LogicException('No default incident status found');
         }
 
@@ -35,7 +35,7 @@ class IncidentService
         return $incident;
     }
 
-    public function deleteIncident(Incident $incident): void
+    public function delete(Incident $incident): void
     {
         $this->manager->remove($incident);
         $this->manager->flush();

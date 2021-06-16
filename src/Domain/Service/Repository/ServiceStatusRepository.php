@@ -13,7 +13,7 @@ class ServiceStatusRepository extends AbstractRepository
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function getServiceStatusCount(): int
+    public function count(): int
     {
         return (int)$this->createQuery('serviceStatus')
             ->select('COUNT(serviceStatus)')
@@ -26,7 +26,7 @@ class ServiceStatusRepository extends AbstractRepository
      * @psalm-suppress MixedReturnStatement
      * @throws NonUniqueResultException
      */
-    public function findDefaultServiceStatus(): ?ServiceStatus
+    public function findDefault(): ?ServiceStatus
     {
         return $this->createQuery('serviceStatus')
             ->where('serviceStatus.default = true')
@@ -40,7 +40,7 @@ class ServiceStatusRepository extends AbstractRepository
      * @psalm-suppress MixedReturnStatement
      * @throws NonUniqueResultException
      */
-    public function findFirstServiceStatus(): ?ServiceStatus
+    public function findFirst(): ?ServiceStatus
     {
         return $this->createQuery('serviceStatus')
             ->setMaxResults(1)

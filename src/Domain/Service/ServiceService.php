@@ -11,7 +11,7 @@ class ServiceService
     {
     }
 
-    public function createService(string $name, ?string $url = null): Service
+    public function create(string $name, ?string $url = null): Service
     {
         $service = new Service($name, $url);
         $this->manager->persist($service);
@@ -20,7 +20,7 @@ class ServiceService
         return $service;
     }
 
-    public function updateService(Service $service, string $name, ?string $url = null): Service
+    public function update(Service $service, string $name, ?string $url = null): Service
     {
         $service->setName($name)
             ->setUrl($url);
@@ -30,7 +30,7 @@ class ServiceService
         return $service;
     }
 
-    public function deleteService(Service $service): void
+    public function delete(Service $service): void
     {
         $this->manager->remove($service);
         $this->manager->flush();

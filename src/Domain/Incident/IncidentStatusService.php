@@ -12,36 +12,36 @@ class IncidentStatusService
     {
     }
 
-    public function createIncidentStatus(
+    public function create(
         string $name,
         string $icon,
         string $color,
         bool $default = false
     ): IncidentStatus {
-        $incidentStatus = new IncidentStatus($name, $icon, $color);
+        $status = new IncidentStatus($name, $icon, $color);
 
         if ($default) {
-            $this->setIncidentStatusAsDefault($incidentStatus);
-        } elseif (!$this->repository->getIncidentStatusCount()) {
-            $incidentStatus->setDefault(true);
+            $this->setStatusAsDefault($status);
+        } elseif (!$this->repository->count()) {
+            $status->setDefault(true);
         }
 
-        $this->manager->persist($incidentStatus);
+        $this->manager->persist($status);
         $this->manager->flush();
 
-        return $incidentStatus;
+        return $status;
     }
 
-    private function setIncidentStatusAsDefault(IncidentStatus $incidentStatus): void
+    private function setStatusAsDefault(IncidentStatus $status): void
     {
-        $incidentStatus->setDefault(true);
+        $status->setDefault(true);
 
-        if (null !== $defaultIncidentStatus = $this->repository->findDefaultIncidentStatus()) {
+        if (null !== $defaultIncidentStatus = $this->repository->findDefault()) {
             $defaultIncidentStatus->setDefault(false);
         }
     }
 
-    public function updateIncidentStatus(
+    public function update(
         IncidentStatus $incidentStatus,
         string $name,
         string $icon,
@@ -50,8 +50,8 @@ class IncidentStatusService
     ): IncidentStatus {
         if ($incidentStatus->isDefault() !== $default) {
             if ($default) {
-                $this->setIncidentStatusAsDefault($incidentStatus);
-            } elseif (null !== $firstIncidentStatus = $this->repository->findFirstIncidentStatus()) {
+                $this->setStatusAsDefault($incidentStatus);
+            } elseif (null !== $firstIncidentStatus = $this->repository->findFirst()) {
                 $firstIncidentStatus->setDefault(true);
             }
         }
@@ -66,11 +66,11 @@ class IncidentStatusService
         return $incidentStatus;
     }
 
-    public function deleteIncidentStatus(IncidentStatus $incidentStatus): void
+    public function delete(IncidentStatus $incidentStatus): void
     {
         if (
             $incidentStatus->isDefault() &&
-            null !== $firstIncidentStatus = $this->repository->findFirstIncidentStatus()
+            null !== $firstIncidentStatus = $this->repository->findFirst()
         ) {
             $firstIncidentStatus->setDefault(true);
         }

@@ -13,10 +13,10 @@ class IncidentStatusRepository extends AbstractRepository
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function getIncidentStatusCount(): int
+    public function count(): int
     {
-        return (int)$this->createQuery('incidentStatus')
-            ->select('COUNT(incidentStatus)')
+        return (int)$this->createQuery('status')
+            ->select('COUNT(status)')
             ->getQuery()
             ->getSingleScalarResult();
     }
@@ -26,10 +26,10 @@ class IncidentStatusRepository extends AbstractRepository
      * @psalm-suppress MixedReturnStatement
      * @throws NonUniqueResultException
      */
-    public function findDefaultIncidentStatus(): ?IncidentStatus
+    public function findDefault(): ?IncidentStatus
     {
-        return $this->createQuery('incidentStatus')
-            ->where('incidentStatus.default = true')
+        return $this->createQuery('status')
+            ->where('status.default = true')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -40,9 +40,9 @@ class IncidentStatusRepository extends AbstractRepository
      * @psalm-suppress MixedReturnStatement
      * @throws NonUniqueResultException
      */
-    public function findFirstIncidentStatus(): ?IncidentStatus
+    public function findFirst(): ?IncidentStatus
     {
-        return $this->createQuery('incidentStatus')
+        return $this->createQuery('status')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

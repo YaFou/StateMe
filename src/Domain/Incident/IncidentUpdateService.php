@@ -17,7 +17,7 @@ class IncidentUpdateService
     ) {
     }
 
-    public function updateUpdate(
+    public function update(
         IncidentUpdate $update,
         string $message,
         IncidentStatus $status,
@@ -32,14 +32,7 @@ class IncidentUpdateService
         return $update;
     }
 
-    /**
-     * @param Incident $incident
-     * @param string $message
-     * @param IncidentStatus $status
-     * @param DateTimeImmutable $updatedAt
-     * @param array<array{Service, ServiceStatus}> $serviceUpdates
-     * @return IncidentUpdate
-     */
+    /** @psalm-suppress MixedArgument */
     public function updateIncident(
         Incident $incident,
         string $message,
@@ -50,7 +43,9 @@ class IncidentUpdateService
         $update = new IncidentUpdate($incident, $message, $status, $updatedAt);
         $this->manager->persist($update);
 
+        /** @psalm-suppress MixedAssignment */
         foreach ($serviceUpdates as $serviceUpdate) {
+            /** @psalm-suppress MixedArrayAccess */
             $this->serviceUpdateService->create($update, $serviceUpdate[0], $serviceUpdate[1]);
         }
 
@@ -59,7 +54,7 @@ class IncidentUpdateService
         return $update;
     }
 
-    public function deleteUpdate(IncidentUpdate $update): void
+    public function delete(IncidentUpdate $update): void
     {
         $this->manager->remove($update);
         $this->manager->flush();

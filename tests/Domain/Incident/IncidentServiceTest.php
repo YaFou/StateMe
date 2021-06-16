@@ -21,7 +21,7 @@ class IncidentServiceTest extends TestCase
         self::$incidentStatus = new IncidentStatus('name', 'icon', 'color');
     }
 
-    public function testCreateIncident(): void
+    public function testCreate(): void
     {
         $expectedIncident = new Incident();
         $createdAt = new DateTimeImmutable();
@@ -31,7 +31,7 @@ class IncidentServiceTest extends TestCase
         $manager->expects(self::once())->method('flush');
 
         $incidentStatusRepository = $this->createMock(IncidentStatusRepository::class);
-        $incidentStatusRepository->method('findDefaultIncidentStatus')->willReturn(self::$incidentStatus);
+        $incidentStatusRepository->method('findDefault')->willReturn(self::$incidentStatus);
 
         $incidentUpdateService = $this->createMock(IncidentUpdateService::class);
         $incidentUpdateService->expects(self::once())
@@ -39,16 +39,16 @@ class IncidentServiceTest extends TestCase
             ->with($expectedIncident, 'message', self::$incidentStatus, $createdAt);
 
         $service = new IncidentService($manager, $incidentStatusRepository, $incidentUpdateService);
-        $incident = $service->createIncident('message', $createdAt);
+        $incident = $service->create('message', $createdAt);
         self::assertEquals($expectedIncident, $incident);
     }
 
-    public function testCreateIncidentWithNoDefaultIncidentStatusAvailable(): void
+    public function testCreateWithNoDefaultAvailable(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
 
         $incidentStatusRepository = $this->createMock(IncidentStatusRepository::class);
-        $incidentStatusRepository->method('findDefaultIncidentStatus')->willReturn(null);
+        $incidentStatusRepository->method('findDefault')->willReturn(null);
 
         $service = new IncidentService(
             $manager,
@@ -57,10 +57,10 @@ class IncidentServiceTest extends TestCase
         );
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('No default incident status found');
-        $service->createIncident('message', new DateTimeImmutable());
+        $service->create('message', new DateTimeImmutable());
     }
 
-    public function testDeleteIncident(): void
+    public function testDelete(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $incident = new Incident();
@@ -73,6 +73,6 @@ class IncidentServiceTest extends TestCase
             $this->createMock(IncidentUpdateService::class)
         );
 
-        $service->deleteIncident($incident);
+        $service->delete($incident);
     }
 }

@@ -14,10 +14,10 @@ class ServiceStatusRepositoryTest extends KernelTestCase
     /**
      * @dataProvider provideServiceStatusCount
      */
-    public function testGetServiceStatusCount(string $fixtureName, int $expectedCount): void
+    public function testCount(string $fixtureName, int $expectedCount): void
     {
         $this->loadFixture($fixtureName);
-        self::assertSame($expectedCount, $this->getRepository()->getServiceStatusCount());
+        self::assertSame($expectedCount, $this->getRepository()->count());
     }
 
     private function getRepository(): ServiceStatusRepository
@@ -25,27 +25,27 @@ class ServiceStatusRepositoryTest extends KernelTestCase
         return self::getContainer()->get(ServiceStatusRepository::class);
     }
 
-    public function testFindDefaultServiceStatusWithNoDefaultIncident(): void
+    public function testFindDefaultWithNoDefault(): void
     {
         $this->loadFixture('service/status/1');
-        self::assertNull($this->getRepository()->findDefaultServiceStatus());
+        self::assertNull($this->getRepository()->findDefault());
     }
 
-    public function testFindDefaultServiceStatus(): void
+    public function testFindDefault(): void
     {
-        ['service-status' => $incidentStatus] = $this->loadFixture('service/status/default');
-        self::assertSame($incidentStatus, $this->getRepository()->findDefaultServiceStatus());
+        ['service-status' => $status] = $this->loadFixture('service/status/default');
+        self::assertSame($status, $this->getRepository()->findDefault());
     }
 
-    public function testFindFirstServiceStatusWithNoStatus(): void
+    public function testFindFirstWithNoEntries(): void
     {
-        self::assertNull($this->getRepository()->findFirstServiceStatus());
+        self::assertNull($this->getRepository()->findFirst());
     }
 
-    public function testFindFirstServiceStatusWith(): void
+    public function testFindFirst(): void
     {
-        ['service-status' => $incidentStatus] = $this->loadFixture('service/status/1');
-        self::assertSame($incidentStatus, $this->getRepository()->findFirstServiceStatus());
+        ['service-status' => $status] = $this->loadFixture('service/status/1');
+        self::assertSame($status, $this->getRepository()->findFirst());
     }
 
     /**

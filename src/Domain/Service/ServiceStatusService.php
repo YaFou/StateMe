@@ -12,7 +12,7 @@ class ServiceStatusService
     {
     }
 
-    public function createServiceStatus(
+    public function create(
         string $name,
         string $icon,
         string $color,
@@ -21,8 +21,8 @@ class ServiceStatusService
         $serviceStatus = new ServiceStatus($name, $icon, $color);
 
         if ($default) {
-            $this->setServiceStatusAsDefault($serviceStatus);
-        } elseif (!$this->repository->getServiceStatusCount()) {
+            $this->setAsDefault($serviceStatus);
+        } elseif (!$this->repository->count()) {
             $serviceStatus->setDefault(true);
         }
 
@@ -32,16 +32,16 @@ class ServiceStatusService
         return $serviceStatus;
     }
 
-    private function setServiceStatusAsDefault(ServiceStatus $serviceStatus): void
+    private function setAsDefault(ServiceStatus $serviceStatus): void
     {
         $serviceStatus->setDefault(true);
 
-        if (null !== $defaultServiceStatus = $this->repository->findDefaultServiceStatus()) {
+        if (null !== $defaultServiceStatus = $this->repository->findDefault()) {
             $defaultServiceStatus->setDefault(false);
         }
     }
 
-    public function updateServiceStatus(
+    public function update(
         ServiceStatus $serviceStatus,
         string $name,
         string $icon,
@@ -50,8 +50,8 @@ class ServiceStatusService
     ): ServiceStatus {
         if ($serviceStatus->isDefault() !== $default) {
             if ($default) {
-                $this->setServiceStatusAsDefault($serviceStatus);
-            } elseif (null !== $firstServiceStatus = $this->repository->findFirstServiceStatus()) {
+                $this->setAsDefault($serviceStatus);
+            } elseif (null !== $firstServiceStatus = $this->repository->findFirst()) {
                 $firstServiceStatus->setDefault(true);
             }
         }
@@ -66,11 +66,11 @@ class ServiceStatusService
         return $serviceStatus;
     }
 
-    public function deleteServiceStatus(ServiceStatus $serviceStatus): void
+    public function delete(ServiceStatus $serviceStatus): void
     {
         if (
             $serviceStatus->isDefault() &&
-            null !== $firstServiceStatus = $this->repository->findFirstServiceStatus()
+            null !== $firstServiceStatus = $this->repository->findFirst()
         ) {
             $firstServiceStatus->setDefault(true);
         }

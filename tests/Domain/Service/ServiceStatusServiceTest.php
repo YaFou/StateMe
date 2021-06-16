@@ -10,69 +10,69 @@ use PHPUnit\Framework\TestCase;
 
 class ServiceStatusServiceTest extends TestCase
 {
-    public function testCreateServiceStatus(): void
+    public function testCreate(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
-        $expectedServiceStatus = new ServiceStatus('name', 'icon', 'color');
-        $manager->expects(self::once())->method('persist')->with($expectedServiceStatus);
+        $expectedStatus = new ServiceStatus('name', 'icon', 'color');
+        $manager->expects(self::once())->method('persist')->with($expectedStatus);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
-        $repository->method('getServiceStatusCount')->willReturn(1);
+        $repository->method('count')->willReturn(1);
 
         $service = new ServiceStatusService($manager, $repository);
-        $serviceStatus = $service->createServiceStatus('name', 'icon', 'color');
-        self::assertEquals($expectedServiceStatus, $serviceStatus);
+        $status = $service->create('name', 'icon', 'color');
+        self::assertEquals($expectedStatus, $status);
     }
 
-    public function testCreateServiceStatusAsFirstStatus(): void
+    public function testCreateAsFirst(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
-        $expectedServiceStatus = new ServiceStatus('name', 'icon', 'color', true);
-        $manager->expects(self::once())->method('persist')->with($expectedServiceStatus);
+        $expectedStatus = new ServiceStatus('name', 'icon', 'color', true);
+        $manager->expects(self::once())->method('persist')->with($expectedStatus);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
-        $repository->method('getServiceStatusCount')->willReturn(0);
+        $repository->method('count')->willReturn(0);
 
         $service = new ServiceStatusService($manager, $repository);
-        $serviceStatus = $service->createServiceStatus('name', 'icon', 'color');
-        self::assertEquals($expectedServiceStatus, $serviceStatus);
+        $status = $service->create('name', 'icon', 'color');
+        self::assertEquals($expectedStatus, $status);
     }
 
-    public function testCreateServiceStatusAsDefault(): void
+    public function testCreateAsDefault(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
-        $expectedServiceStatus = new ServiceStatus('name', 'icon', 'color', true);
-        $manager->expects(self::once())->method('persist')->with($expectedServiceStatus);
+        $expectedStatus = new ServiceStatus('name', 'icon', 'color', true);
+        $manager->expects(self::once())->method('persist')->with($expectedStatus);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
-        $defaultServiceStatus = new ServiceStatus('default', 'icon', 'color', true);
-        $repository->method('findDefaultServiceStatus')->willReturn($defaultServiceStatus);
+        $defaultStatus = new ServiceStatus('default', 'icon', 'color', true);
+        $repository->method('findDefault')->willReturn($defaultStatus);
 
         $service = new ServiceStatusService($manager, $repository);
-        $serviceStatus = $service->createServiceStatus('name', 'icon', 'color', true);
-        self::assertEquals($expectedServiceStatus, $serviceStatus);
-        self::assertFalse($defaultServiceStatus->isDefault());
+        $status = $service->create('name', 'icon', 'color', true);
+        self::assertEquals($expectedStatus, $status);
+        self::assertFalse($defaultStatus->isDefault());
     }
 
-    public function testCreateServiceStatusAsDefaultAndNoDefaultStatus(): void
+    public function testCreateAsDefaultAndNoDefaultAvailable(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
-        $expectedServiceStatus = new ServiceStatus('name', 'icon', 'color', true);
-        $manager->expects(self::once())->method('persist')->with($expectedServiceStatus);
+        $expectedStatus = new ServiceStatus('name', 'icon', 'color', true);
+        $manager->expects(self::once())->method('persist')->with($expectedStatus);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
-        $repository->method('findDefaultServiceStatus')->willReturn(null);
+        $repository->method('findDefault')->willReturn(null);
 
         $service = new ServiceStatusService($manager, $repository);
-        $serviceStatus = $service->createServiceStatus('name', 'icon', 'color', true);
-        self::assertEquals($expectedServiceStatus, $serviceStatus);
+        $status = $service->create('name', 'icon', 'color', true);
+        self::assertEquals($expectedStatus, $status);
     }
 
-    public function testUpdateServiceStatus(): void
+    public function testUpdate(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $manager->expects(self::once())->method('flush');
@@ -80,112 +80,112 @@ class ServiceStatusServiceTest extends TestCase
         $repository = $this->createMock(ServiceStatusRepository::class);
 
         $service = new ServiceStatusService($manager, $repository);
-        $oldServiceStatus = new ServiceStatus('old name', 'old icon', 'old color');
-        $newServiceStatus = $service->updateServiceStatus(
-            $oldServiceStatus,
+        $oldStatus = new ServiceStatus('old name', 'old icon', 'old color');
+        $newStatus = $service->update(
+            $oldStatus,
             'new name',
             'new icon',
             'new color'
         );
 
-        self::assertSame($oldServiceStatus, $newServiceStatus);
-        self::assertSame('new name', $newServiceStatus->getName());
-        self::assertSame('new icon', $newServiceStatus->getIcon());
-        self::assertSame('new color', $newServiceStatus->getColor());
+        self::assertSame($oldStatus, $newStatus);
+        self::assertSame('new name', $newStatus->getName());
+        self::assertSame('new icon', $newStatus->getIcon());
+        self::assertSame('new color', $newStatus->getColor());
     }
 
-    public function testUpdateServiceStatusAsDefault(): void
+    public function testUpdateAsDefault(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
-        $defaultServiceStatus = new ServiceStatus('default', 'icon', 'color', true);
-        $repository->method('findDefaultServiceStatus')->willReturn($defaultServiceStatus);
+        $defaultStatus = new ServiceStatus('default', 'icon', 'color', true);
+        $repository->method('findDefault')->willReturn($defaultStatus);
 
         $service = new ServiceStatusService($manager, $repository);
-        $oldServiceStatus = new ServiceStatus('old name', 'old icon', 'old color');
-        $newServiceStatus = $service->updateServiceStatus(
-            $oldServiceStatus,
+        $oldStatus = new ServiceStatus('old name', 'old icon', 'old color');
+        $newStatus = $service->update(
+            $oldStatus,
             'new name',
             'new icon',
             'new color',
             true
         );
 
-        self::assertSame($oldServiceStatus, $newServiceStatus);
-        self::assertSame('new name', $newServiceStatus->getName());
-        self::assertSame('new icon', $newServiceStatus->getIcon());
-        self::assertSame('new color', $newServiceStatus->getColor());
-        self::assertFalse($defaultServiceStatus->isDefault());
+        self::assertSame($oldStatus, $newStatus);
+        self::assertSame('new name', $newStatus->getName());
+        self::assertSame('new icon', $newStatus->getIcon());
+        self::assertSame('new color', $newStatus->getColor());
+        self::assertFalse($defaultStatus->isDefault());
     }
 
-    public function testUpdateServiceStatusAsNotDefault(): void
+    public function testUpdateAsNotDefault(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
-        $firstServiceStatus = new ServiceStatus('first', 'icon', 'color');
-        $repository->method('findFirstServiceStatus')->willReturn($firstServiceStatus);
+        $firstStatus = new ServiceStatus('first', 'icon', 'color');
+        $repository->method('findFirst')->willReturn($firstStatus);
 
         $service = new ServiceStatusService($manager, $repository);
-        $oldServiceStatus = new ServiceStatus('old name', 'old icon', 'old color', true);
-        $newServiceStatus = $service->updateServiceStatus(
-            $oldServiceStatus,
+        $oldStatus = new ServiceStatus('old name', 'old icon', 'old color', true);
+        $newStatus = $service->update(
+            $oldStatus,
             'new name',
             'new icon',
             'new color'
         );
 
-        self::assertSame($oldServiceStatus, $newServiceStatus);
-        self::assertSame('new name', $newServiceStatus->getName());
-        self::assertSame('new icon', $newServiceStatus->getIcon());
-        self::assertSame('new color', $newServiceStatus->getColor());
-        self::assertFalse($newServiceStatus->isDefault());
-        self::assertTrue($firstServiceStatus->isDefault());
+        self::assertSame($oldStatus, $newStatus);
+        self::assertSame('new name', $newStatus->getName());
+        self::assertSame('new icon', $newStatus->getIcon());
+        self::assertSame('new color', $newStatus->getColor());
+        self::assertFalse($newStatus->isDefault());
+        self::assertTrue($firstStatus->isDefault());
     }
 
-    public function testDeleteServiceStatus(): void
+    public function testDelete(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
-        $serviceStatus = new ServiceStatus('name', 'icon', 'color');
-        $manager->expects(self::once())->method('remove')->with($serviceStatus);
+        $status = new ServiceStatus('name', 'icon', 'color');
+        $manager->expects(self::once())->method('remove')->with($status);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
 
         $service = new ServiceStatusService($manager, $repository);
-        $service->deleteServiceStatus($serviceStatus);
+        $service->delete($status);
     }
 
-    public function testDeleteServiceStatusAsDefaultAndNoMoreStatuses(): void
+    public function testDeleteAsDefaultAndNoEntriesAvailable(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
-        $serviceStatus = new ServiceStatus('name', 'icon', 'color', true);
-        $manager->expects(self::once())->method('remove')->with($serviceStatus);
+        $status = new ServiceStatus('name', 'icon', 'color', true);
+        $manager->expects(self::once())->method('remove')->with($status);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
-        $repository->method('findFirstServiceStatus')->willReturn(null);
+        $repository->method('findFirst')->willReturn(null);
 
         $service = new ServiceStatusService($manager, $repository);
-        $service->deleteServiceStatus($serviceStatus);
+        $service->delete($status);
     }
 
-    public function testDeleteServiceStatusAsDefault(): void
+    public function testDeleteAsDefault(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
-        $serviceStatus = new ServiceStatus('name', 'icon', 'color', true);
-        $manager->expects(self::once())->method('remove')->with($serviceStatus);
+        $status = new ServiceStatus('name', 'icon', 'color', true);
+        $manager->expects(self::once())->method('remove')->with($status);
         $manager->expects(self::once())->method('flush');
 
         $repository = $this->createMock(ServiceStatusRepository::class);
-        $firstServiceStatus = new ServiceStatus('first', 'icon', 'color');
-        $repository->method('findFirstServiceStatus')->willReturn($firstServiceStatus);
+        $firstStatus = new ServiceStatus('first', 'icon', 'color');
+        $repository->method('findFirst')->willReturn($firstStatus);
 
         $service = new ServiceStatusService($manager, $repository);
-        $service->deleteServiceStatus($serviceStatus);
-        self::assertTrue($firstServiceStatus->isDefault());
+        $service->delete($status);
+        self::assertTrue($firstStatus->isDefault());
     }
 }

@@ -42,7 +42,7 @@ class IncidentUpdateServiceTest extends TestCase
         self::assertEquals($expectedUpdate, $update);
     }
 
-    public function testUpdateIncidentWithServiceUpdates(): void
+    public function testUpdateWithServiceUpdates(): void
     {
         $service1 = clone $service2 = $this->createMock(Service::class);
         $incident = new Incident();
@@ -89,7 +89,7 @@ class IncidentUpdateServiceTest extends TestCase
         self::assertEquals($expectedUpdate, $update);
     }
 
-    public function testUpdateUpdate(): void
+    public function testUpdate(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $manager->expects(self::once())->method('flush');
@@ -106,7 +106,7 @@ class IncidentUpdateServiceTest extends TestCase
             new DateTimeImmutable()
         );
 
-        $newUpdate = $service->updateUpdate(
+        $newUpdate = $service->update(
             $oldUpdate,
             'new message',
             self::$incidentStatus,
@@ -119,7 +119,7 @@ class IncidentUpdateServiceTest extends TestCase
         self::assertSame($newUpdatedAt, $newUpdate->getUpdatedAt());
     }
 
-    public function testDeleteUpdate(): void
+    public function testDelete(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);
         $update = new IncidentUpdate(new Incident(), 'message', self::$incidentStatus, new DateTimeImmutable());
@@ -129,6 +129,6 @@ class IncidentUpdateServiceTest extends TestCase
         $serviceUpdateService = $this->createMock(ServiceUpdateService::class);
 
         $service = new IncidentUpdateService($manager, $serviceUpdateService);
-        $service->deleteUpdate($update);
+        $service->delete($update);
     }
 }
