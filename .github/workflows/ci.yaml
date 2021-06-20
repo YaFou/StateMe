@@ -189,4 +189,4 @@ jobs:
             -   name: Lint Twig files
                 run: bin/console lint:twig
             -   name: Lint YAML files
-                run: bin/console lint:yaml config
+                run: bin/console lint:yaml fixtures tests/fixtures
