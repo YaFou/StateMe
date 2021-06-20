@@ -11,18 +11,24 @@
         {% endif %}
 
         <table>
-            {% for service in services %}
+            {% for currentService in services %}
                 <tr>
-                    <td>
-                        {{ service.name }}
+                    <td {% if service is defined and service is same as(currentService) %}class="text--strong"{% endif %}>
+                        {{ currentService.name }}
 
-                        {% if service.url %}
-                            (<a href="{{ service.url }}">link</a>)
+                        {% if currentService.url %}
+                            (<a href="{{ currentService.url }}">link</a>)
                         {% endif %}
                     </td>
 
                     <td>
-                        <a href="{{ path('service:edit', {id: service.id}) }}">Edit</a>
+                        <a href="{{ path('service:edit', {id: currentService.id}) }}">Edit</a>
+
+                        <form action="{{ path('service:delete', {id: currentService.id}) }}" method="POST">
+                            <input type="hidden" name="_token"
+                                   value="{{ csrf_token('service:'~currentService.id~':delete') }}">
+                            <button type="submit">Delete</button>
+                        </form>
                     </td>
                 </tr>
             {% endfor %}
