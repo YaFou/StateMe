@@ -10,17 +10,23 @@
             <a href="{{ path('service:new') }}">New service</a>
         {% endif %}
 
-        <ul>
+        <table>
             {% for service in services %}
-                <li>
-                    <a href="{{ path('service:edit', {id: service.id}) }}">{{ service.name }}</a>
+                <tr>
+                    <td>
+                        {{ service.name }}
 
-                    {% if service.url %}
-                        (<a href="{{ service.url }}">link</a>)
-                    {% endif %}
-                </li>
+                        {% if service.url %}
+                            (<a href="{{ service.url }}">link</a>)
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{{ path('service:edit', {id: service.id}) }}">Edit</a>
+                    </td>
+                </tr>
             {% endfor %}
-        </ul>
+        </table>
     </div>
 
     <div>
