@@ -6,10 +6,14 @@
 
 {% block body %}
     <div>
+        {% if showNewButton ?? true %}
+            <a href="{{ path('service:new') }}">New service</a>
+        {% endif %}
+
         <ul>
             {% for service in services %}
                 <li>
-                    {{ service.name }}
+                    <a href="{{ path('service:edit', {id: service.id}) }}">{{ service.name }}</a>
 
                     {% if service.url %}
                         (<a href="{{ service.url }}">link</a>)

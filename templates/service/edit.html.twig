@@ -1,0 +1,10 @@
+{% extends 'service/index.html.twig' %}
+
+{% block innerBody %}
+    {{ include('service/_form.html.twig') }}
+{% endblock %}
+
+{% block title %}
+    Edit service "{{ service.name }}"
+{% endblock %}
+
