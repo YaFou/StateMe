@@ -54,7 +54,7 @@ class ServiceStatusRepositoryTest extends KernelTestCase
     /**
      * @return Generator
      *
-     * @psalm-return Generator<int, array{0: string, 1: 0|1|2}, mixed, void>
+     * @psalm-return Generator<int, array{0: ?string, 1: 0|1|2}, mixed, void>
      */
     public function provideServiceStatusCount(): Generator
     {
