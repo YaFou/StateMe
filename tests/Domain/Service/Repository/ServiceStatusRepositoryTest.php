@@ -14,9 +14,12 @@ class ServiceStatusRepositoryTest extends KernelTestCase
     /**
      * @dataProvider provideServiceStatusCount
      */
-    public function testCount(string $fixtureName, int $expectedCount): void
+    public function testCount(?string $fixtureName, int $expectedCount): void
     {
-        $this->loadFixture($fixtureName);
+        if (null !== $fixtureName) {
+            $this->loadFixture($fixtureName);
+        }
+
         self::assertSame($expectedCount, $this->getRepository()->count());
     }
 
@@ -27,7 +30,7 @@ class ServiceStatusRepositoryTest extends KernelTestCase
 
     public function testFindDefaultWithNoDefault(): void
     {
-        $this->loadFixture('service/status/1');
+        $this->loadFixture('service/status/one');
         self::assertNull($this->getRepository()->findDefault());
     }
 
@@ -44,7 +47,7 @@ class ServiceStatusRepositoryTest extends KernelTestCase
 
     public function testFindFirst(): void
     {
-        ['service-status' => $status] = $this->loadFixture('service/status/1');
+        ['service-status' => $status] = $this->loadFixture('service/status/one');
         self::assertSame($status, $this->getRepository()->findFirst());
     }
 
@@ -55,8 +58,8 @@ class ServiceStatusRepositoryTest extends KernelTestCase
      */
     public function provideServiceStatusCount(): Generator
     {
-        yield ['service/status/0', 0];
-        yield ['service/status/1', 1];
-        yield ['service/status/2', 2];
+        yield [null, 0];
+        yield ['service/status/one', 1];
+        yield ['service/status/two', 2];
     }
 }

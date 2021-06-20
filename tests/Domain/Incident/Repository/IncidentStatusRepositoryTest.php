@@ -14,9 +14,12 @@ class IncidentStatusRepositoryTest extends KernelTestCase
     /**
      * @dataProvider provideIncidentStatusCount
      */
-    public function testCount(string $fixtureName, int $expectedCount): void
+    public function testCount(?string $fixtureName, int $expectedCount): void
     {
-        $this->loadFixture($fixtureName);
+        if (null !== $fixtureName) {
+            $this->loadFixture($fixtureName);
+        }
+
         self::assertSame($expectedCount, $this->getRepository()->count());
     }
 
@@ -27,7 +30,7 @@ class IncidentStatusRepositoryTest extends KernelTestCase
 
     public function testFindDefaultWithNoDefault(): void
     {
-        $this->loadFixture('incident/status/1');
+        $this->loadFixture('incident/status/one');
         self::assertNull($this->getRepository()->findDefault());
     }
 
@@ -44,7 +47,7 @@ class IncidentStatusRepositoryTest extends KernelTestCase
 
     public function testFindFirst(): void
     {
-        ['incident-status' => $status] = $this->loadFixture('incident/status/1');
+        ['incident-status' => $status] = $this->loadFixture('incident/status/one');
         self::assertSame($status, $this->getRepository()->findFirst());
     }
 
@@ -55,8 +58,8 @@ class IncidentStatusRepositoryTest extends KernelTestCase
      */
     public function provideIncidentStatusCount(): Generator
     {
-        yield ['incident/status/0', 0];
-        yield ['incident/status/1', 1];
-        yield ['incident/status/2', 2];
+        yield [null, 0];
+        yield ['incident/status/one', 1];
+        yield ['incident/status/two', 2];
     }
 }
