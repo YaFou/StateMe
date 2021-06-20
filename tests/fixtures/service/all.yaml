@@ -1,0 +1,5 @@
+include:
+    - ../../../fixtures/template.yaml
+
+App\Domain\Service\Entity\Service:
+    service{1..3} (extends t_service):

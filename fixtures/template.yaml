@@ -1,0 +1,11 @@
+App\Domain\Incident\Entity\IncidentStatus:
+    t_incident-status (template):
+        __construct: [ <word()>, <word()>, <safeHexColor()> ]
+
+App\Domain\Service\Entity\ServiceStatus:
+    t_service-status (template):
+        __construct: [ <word()>, <word()>, <safeHexColor()> ]
+
+App\Domain\Service\Entity\Service:
+    t_service (template):
+        __construct: [ <word()>, <url()> ]

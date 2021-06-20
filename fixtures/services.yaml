@@ -1,0 +1,5 @@
+include:
+    - ./template.yaml
+
+App\Domain\Service\Entity\Service:
+    service{1..10} (extends t_service):

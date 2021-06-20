@@ -16,6 +16,7 @@ class Kernel extends BaseKernel
         $container->import('../config/{packages}/*.php');
         /** @psalm-suppress MixedArgument */
         $container->import(sprintf('../config/{packages}/%s/*.php', $this->environment));
+//        $container->import('../config/packages/dev/hautelook_alice.yaml');
 
         $container->import('../config/{services}.php');
         /** @psalm-suppress MixedArgument */

@@ -1,5 +1,5 @@
 include:
-    - ../../template.yaml
+    - ../../../../fixtures/template.yaml
 
 App\Domain\Incident\Entity\IncidentStatus:
     incident-status{1..2} (extends t_incident-status):
