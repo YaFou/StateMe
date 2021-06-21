@@ -6,16 +6,16 @@ use App\Application\Form\ServiceType;
 use App\Domain\Service\Dto\ServiceDto;
 use App\Domain\Service\Repository\ServiceRepository;
 use App\Domain\Service\ServiceService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class NewServiceController extends AbstractController
+class NewServiceController extends AbstractServiceController
 {
     public function __construct(private ServiceRepository $repository, private ServiceService $service)
     {
+        parent::__construct($this->repository);
     }
 
     #[Route('/dashboard/services/new', name: 'service:new')]
@@ -35,7 +35,6 @@ class NewServiceController extends AbstractController
         return $this->render(
             'service/new.html.twig',
             [
-                'services' => $this->repository->findAll(),
                 'form' => $form->createView(),
                 'showNewButton' => false
             ]

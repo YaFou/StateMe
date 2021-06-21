@@ -7,16 +7,16 @@ use App\Domain\Service\Dto\ServiceDto;
 use App\Domain\Service\Entity\Service;
 use App\Domain\Service\Repository\ServiceRepository;
 use App\Domain\Service\ServiceService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class EditServiceController extends AbstractController
+class EditServiceController extends AbstractServiceController
 {
     public function __construct(private ServiceRepository $repository, private ServiceService $service)
     {
+        parent::__construct($this->repository);
     }
 
     #[Route('/dashboard/services/{id<\d+>}', name: 'service:edit')]
@@ -37,7 +37,6 @@ class EditServiceController extends AbstractController
         return $this->render(
             'service/edit.html.twig',
             [
-                'services' => $this->repository->findAll(),
                 'form' => $form->createView(),
                 'service' => $service
             ]
