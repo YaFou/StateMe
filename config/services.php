@@ -2,6 +2,8 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use App\Infrastructure\Twig\AssetsTwigExtension;
+
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
 
@@ -19,4 +21,12 @@ return static function (ContainerConfigurator $container) {
 
     $services->load('App\Application\Controller\\', '../src/Application/Controller/**')
         ->tag('controller.service_arguments');
+
+    $services->get(AssetsTwigExtension::class)
+        ->args(
+            [
+                '$environment' => param('kernel.environment'),
+                '$manifestPath' => '%kernel.project_dir%/public/assets/manifest.json'
+            ]
+        );
 };

@@ -16,6 +16,7 @@ class DeleteServiceControllerTest extends WebTestCase
 
     public function test(): void
     {
+        // TODO
         $this->markTestSkipped(
             'Bug about CSRF tokens in test environment (see https://github.com/symfony/symfony/issues/41757)'
         );

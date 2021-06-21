@@ -31,14 +31,12 @@ class IncidentUpdateService
 
     /**
      * @psalm-suppress MixedArgument
-     * @psalm-suppress MixedArrayAccess
      */
     public function create(Incident $incident, CreateIncidentUpdateDto $data): IncidentUpdate
     {
         $update = new IncidentUpdate($incident, $data->message, $data->status, $data->updatedAt);
         $this->manager->persist($update);
 
-        /** @psalm-suppress MixedAssignment */
         foreach ($data->serviceUpdates as $serviceUpdate) {
             $serviceUpdateData = new CreateServiceUpdateDto();
             $serviceUpdateData->service = $serviceUpdate[0];

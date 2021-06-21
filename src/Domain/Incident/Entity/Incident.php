@@ -28,11 +28,6 @@ class Incident
         return $this;
     }
 
-    public function getUpdates(): Collection
-    {
-        return $this->updates;
-    }
-
     public function getLastUpdate(): ?IncidentUpdate
     {
         /** @var ArrayIterator $updates */

@@ -1,0 +1,14 @@
+{
+    "name": "@yafou/stateme",
+    "version": "0.1.0",
+    "dependencies": {},
+    "license": "MIT",
+    "devDependencies": {
+        "sass": "^1.35.1",
+        "vite": "^2.3.8"
+    },
+    "scripts": {
+        "start": "vite",
+        "build": "vite build"
+    }
+}

@@ -13,5 +13,9 @@ class CreateIncidentUpdateDto
     public string $message;
     public IncidentStatus $status;
     public DateTimeImmutable $updatedAt;
+
+    /**
+     * @psalm-var array<array{0: \App\Domain\Service\Entity\Service, 1: \App\Domain\Service\Entity\ServiceStatus}>
+     */
     public array $serviceUpdates = [];
 }

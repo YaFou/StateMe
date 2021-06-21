@@ -5,8 +5,8 @@ namespace App\Application\Controller\Service;
 use App\Domain\Service\Entity\Service;
 use App\Domain\Service\ServiceService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DeleteServiceController extends AbstractController
@@ -19,7 +19,7 @@ class DeleteServiceController extends AbstractController
     public function __invoke(
         Request $request,
         Service $service
-    ): Response {
+    ): RedirectResponse {
         if (
         $this->isCsrfTokenValid(
             sprintf('service:%d:delete', $service->getId()),

@@ -23,28 +23,12 @@ class ServiceUpdate
         $this->service->addUpdate($this);
     }
 
-    public function getIncidentUpdate(): IncidentUpdate
-    {
-        return $this->incidentUpdate;
-    }
-
-    public function getService(): Service
-    {
-        return $this->service;
-    }
-
-    public function setService(Service $service): ServiceUpdate
-    {
-        $this->service = $service;
-        return $this;
-    }
-
     public function getStatus(): ServiceStatus
     {
         return $this->status;
     }
 
-    public function setStatus(ServiceStatus $status): ServiceUpdate
+    public function setStatus(ServiceStatus $status): static
     {
         $this->status = $status;
         return $this;

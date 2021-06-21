@@ -25,3 +25,5 @@
 ###< squizlabs/php_codesniffer ###
 
 /composer.lock
+/node_modules/
+/public/assets/

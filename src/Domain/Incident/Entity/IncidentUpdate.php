@@ -41,7 +41,7 @@ class IncidentUpdate
         return $this->message;
     }
 
-    public function setMessage(string $message): IncidentUpdate
+    public function setMessage(string $message): static
     {
         $this->message = $message;
         return $this;
@@ -52,7 +52,7 @@ class IncidentUpdate
         return $this->status;
     }
 
-    public function setStatus(IncidentStatus $status): IncidentUpdate
+    public function setStatus(IncidentStatus $status): static
     {
         $this->status = $status;
         return $this;
@@ -63,7 +63,7 @@ class IncidentUpdate
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(DateTimeImmutable $updatedAt): IncidentUpdate
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -74,10 +74,5 @@ class IncidentUpdate
         $this->serviceUpdates->add($serviceUpdate);
 
         return $this;
-    }
-
-    public function getServiceUpdates(): Collection
-    {
-        return $this->serviceUpdates;
     }
 }

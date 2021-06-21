@@ -1,0 +1,9 @@
+{
+    "asset": {
+        "file": "compiled-asset",
+        "css": [
+            "css1",
+            "css2"
+        ]
+    }
+}
