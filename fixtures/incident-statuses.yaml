@@ -1,0 +1,21 @@
+App\Domain\Incident\Entity\IncidentStatus:
+    incident-status_investigating (extends t_incident-status):
+        name: Investigating
+        icon: flag
+        color: dc3545
+        default: true
+
+    incident-status_identified (extends t_incident-status):
+        name: Identified
+        icon: alert-triangle
+        color: dbab09
+
+    incident-status_watching (extends t_incident-status):
+        name: Watching
+        icon: eye
+        color: 0366d6
+
+    incident-status_fixed (extends t_incident-status):
+        name: Fixed
+        icon: check
+        color: 28a745
