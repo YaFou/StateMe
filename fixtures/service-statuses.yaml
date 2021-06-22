@@ -3,6 +3,7 @@ App\Domain\Service\Entity\ServiceStatus:
         name: Operational
         icon: check
         color: 28a745
+        default: true
 
     service-status_degraded-performance (extends t_service-status):
         name: Degraded performance

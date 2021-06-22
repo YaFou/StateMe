@@ -4,6 +4,7 @@ namespace App\Application\Form;
 
 use App\Domain\Service\Dto\ServiceStatusDto;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,7 +16,8 @@ class ServiceStatusType extends AbstractType
         $builder
             ->add('name')
             ->add('icon')
-            ->add('color', ColorType::class, ['html5' => true]);
+            ->add('color', ColorType::class, ['html5' => true])
+            ->add('default', CheckboxType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
