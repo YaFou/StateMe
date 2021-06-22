@@ -15,59 +15,59 @@ class ServiceStatusService
 
     public function create(ServiceStatusDto $data): ServiceStatus
     {
-        $serviceStatus = new ServiceStatus($data->name, $data->icon, $data->color);
+        $status = new ServiceStatus($data->name, $data->icon, $data->color);
 
         if ($data->default) {
-            $this->setAsDefault($serviceStatus);
+            $this->setAsDefault($status);
         } elseif (!$this->repository->count()) {
-            $serviceStatus->setDefault(true);
+            $status->setDefault(true);
         }
 
-        $this->manager->persist($serviceStatus);
+        $this->manager->persist($status);
         $this->manager->flush();
 
-        return $serviceStatus;
+        return $status;
     }
 
-    private function setAsDefault(ServiceStatus $serviceStatus): void
+    private function setAsDefault(ServiceStatus $status): void
     {
-        $serviceStatus->setDefault(true);
+        $status->setDefault(true);
 
-        if (null !== $defaultServiceStatus = $this->repository->findDefault()) {
-            $defaultServiceStatus->setDefault(false);
+        if (null !== $defaultStatus = $this->repository->findDefault()) {
+            $defaultStatus->setDefault(false);
         }
     }
 
-    public function update(ServiceStatus $serviceStatus, ServiceStatusDto $data): ServiceStatus
+    public function update(ServiceStatus $status, ServiceStatusDto $data): ServiceStatus
     {
-        if ($serviceStatus->isDefault() !== $data->default) {
+        if ($status->isDefault() !== $data->default) {
             if ($data->default) {
-                $this->setAsDefault($serviceStatus);
+                $this->setAsDefault($status);
             } elseif (null !== $firstServiceStatus = $this->repository->findFirst()) {
                 $firstServiceStatus->setDefault(true);
             }
         }
 
-        $serviceStatus->setName($data->name)
+        $status->setName($data->name)
             ->setIcon($data->icon)
             ->setColor($data->color)
             ->setDefault($data->default);
 
         $this->manager->flush();
 
-        return $serviceStatus;
+        return $status;
     }
 
-    public function delete(ServiceStatus $serviceStatus): void
+    public function delete(ServiceStatus $status): void
     {
         if (
-            $serviceStatus->isDefault() &&
+            $status->isDefault() &&
             null !== $firstServiceStatus = $this->repository->findFirst()
         ) {
             $firstServiceStatus->setDefault(true);
         }
 
-        $this->manager->remove($serviceStatus);
+        $this->manager->remove($status);
         $this->manager->flush();
     }
 }

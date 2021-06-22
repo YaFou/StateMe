@@ -14,9 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EditServiceController extends AbstractServiceController
 {
-    public function __construct(private ServiceRepository $repository, private ServiceService $service)
+    public function __construct(ServiceRepository $repository, private ServiceService $service)
     {
-        parent::__construct($this->repository);
+        parent::__construct($repository);
     }
 
     #[Route('/dashboard/services/{id<\d+>}', name: 'service:edit')]

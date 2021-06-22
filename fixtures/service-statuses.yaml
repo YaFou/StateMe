@@ -1,0 +1,20 @@
+App\Domain\Service\Entity\ServiceStatus:
+    service-status_operational (extends t_service-status):
+        name: Operational
+        icon: check
+        color: 28a745
+
+    service-status_degraded-performance (extends t_service-status):
+        name: Degraded performance
+        icon: alert-circle
+        color: dbab09
+
+    service-status_partial-outrage (extends t_service-status):
+        name: Partial outrage
+        icon: alert-triangle
+        color: e36209
+
+    service-status_major-outrage (extends t_service-status):
+        name: Major outrage
+        icon: alert-octagon
+        color: dc3545

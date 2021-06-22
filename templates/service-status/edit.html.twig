@@ -1,0 +1,10 @@
+{% extends 'service-status/index.html.twig' %}
+
+{% block innerBody %}
+    {{ include('service-status/_form.html.twig') }}
+{% endblock %}
+
+{% block title %}
+    Edit service status "{{ status.name }}"
+{% endblock %}
+

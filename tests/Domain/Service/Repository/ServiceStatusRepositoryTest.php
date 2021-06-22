@@ -51,6 +51,12 @@ class ServiceStatusRepositoryTest extends KernelTestCase
         self::assertSame($status, $this->getRepository()->findFirst());
     }
 
+    public function testFindAll(): void
+    {
+        $statuses = array_values($this->loadFixture('service/status/two'));
+        self::assertSame($statuses, $this->getRepository()->findAll());
+    }
+
     /**
      * @return Generator
      *

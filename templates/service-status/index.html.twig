@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Service statuses
+{% endblock %}
+
+{% block body %}
+    <div>
+        {% if showNewButton ?? true %}
+            <a href="{{ path('service-status:new') }}">New service status</a>
+        {% endif %}
+
+        <table>
+            {% for currentStatus in statuses %}
+                <tr>
+                    <td {% if status is defined and status is same as(currentStatus) %}class="text--strong"{% endif %}>
+                        <i style="background-color: #{{ currentStatus.color }};"
+                           data-feather="{{ currentStatus.icon }}"></i>
+                        {{ currentStatus.name }}
+                    </td>
+
+                    <td>
+                        <a href="{{ path('service-status:edit', {id: currentStatus.id}) }}">Edit</a>
+
+                        <form action="{{ path('service-status:delete', {id: currentStatus.id}) }}" method="POST">
+                            <input type="hidden" name="_token"
+                                   value="{{ csrf_token('service-status:'~currentStatus.id~':delete') }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div>
+        {% block innerBody %}{% endblock %}
+    </div>
+{% endblock %}

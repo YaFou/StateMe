@@ -15,8 +15,8 @@ class ServiceStatusRepository extends AbstractRepository
      */
     public function count(): int
     {
-        return (int)$this->createQuery('serviceStatus')
-            ->select('COUNT(serviceStatus)')
+        return (int)$this->createQuery('status')
+            ->select('COUNT(status)')
             ->getQuery()
             ->getSingleScalarResult();
     }
@@ -28,8 +28,8 @@ class ServiceStatusRepository extends AbstractRepository
      */
     public function findDefault(): ?ServiceStatus
     {
-        return $this->createQuery('serviceStatus')
-            ->where('serviceStatus.default = true')
+        return $this->createQuery('status')
+            ->where('status.default = true')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -42,10 +42,22 @@ class ServiceStatusRepository extends AbstractRepository
      */
     public function findFirst(): ?ServiceStatus
     {
-        return $this->createQuery('serviceStatus')
+        return $this->createQuery('status')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @return ServiceStatus[]
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     */
+    public function findAll(): array
+    {
+        return $this->createQuery('status')
+            ->getQuery()
+            ->getResult();
     }
 
     protected function getEntityClass(): string

@@ -21,10 +21,10 @@ class DeleteServiceController extends AbstractController
         Service $service
     ): RedirectResponse {
         if (
-        $this->isCsrfTokenValid(
-            sprintf('service:%d:delete', $service->getId()),
-            $request->request->get('_token')
-        )
+            $this->isCsrfTokenValid(
+                sprintf('service:%d:delete', $service->getId()),
+                $request->request->get('_token')
+            )
         ) {
             $this->service->delete($service);
         }
