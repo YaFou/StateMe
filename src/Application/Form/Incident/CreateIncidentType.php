@@ -15,7 +15,8 @@ class CreateIncidentType extends AbstractType
     {
         $builder
             ->add('message', TextareaType::class)
-            ->add('createdAt', DateTimeType::class, ['input' => 'datetime_immutable']);
+            ->add('createdAt', DateTimeType::class, ['input' => 'datetime_immutable'])
+            ->add('serviceUpdates', ServiceUpdatesType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

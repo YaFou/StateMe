@@ -76,6 +76,39 @@ class IncidentServiceTest extends TestCase
         $service->create($data);
     }
 
+    public function testCreateWithServiceUpdates(): void
+    {
+        $expectedIncident = new Incident();
+        $createdAt = new DateTimeImmutable();
+
+        $manager = $this->createMock(EntityManagerInterface::class);
+        $manager->expects(self::once())->method('persist')->with($expectedIncident);
+        $manager->expects(self::once())->method('flush');
+
+        $incidentStatusRepository = $this->createMock(IncidentStatusRepository::class);
+        $incidentStatusRepository->method('findDefault')->willReturn(self::$incidentStatus);
+
+        $updateData = new CreateIncidentUpdateDto();
+        $updateData->message = 'message';
+        $updateData->status = self::$incidentStatus;
+        $updateData->updatedAt = $createdAt;
+        $updateData->serviceUpdates = ['service1' => 'status1', 'service2' => 'status2'];
+
+        $incidentUpdateService = $this->createMock(IncidentUpdateService::class);
+        $incidentUpdateService->expects(self::once())
+            ->method('create')
+            ->with($expectedIncident, $updateData);
+
+        $data = new CreateIncidentDto();
+        $data->message = 'message';
+        $data->createdAt = $createdAt;
+        $data->serviceUpdates = ['service1' => 'status1', 'service2' => 'status2'];
+
+        $service = new IncidentService($manager, $incidentStatusRepository, $incidentUpdateService);
+        $incident = $service->create($data);
+        self::assertEquals($expectedIncident, $incident);
+    }
+
     public function testDelete(): void
     {
         $manager = $this->createMock(EntityManagerInterface::class);

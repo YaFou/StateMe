@@ -13,6 +13,9 @@ class Service
     use IdTrait;
 
     #[ORM\OneToMany(mappedBy: 'service', targetEntity: ServiceUpdate::class, orphanRemoval: true)]
+    /**
+     * @var Collection<ServiceUpdate>
+     */
     private Collection $updates;
 
     public function __construct(
@@ -51,5 +54,17 @@ class Service
         $this->updates->add($update);
 
         return $this;
+    }
+
+    public function getLastStatus(ServiceStatus $default): ServiceStatus
+    {
+        // TODO
+        $update = $this->updates->last();
+
+        if (!$update) {
+            return $default;
+        }
+
+        return $update->getStatus();
     }
 }

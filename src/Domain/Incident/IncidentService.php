@@ -35,6 +35,7 @@ class IncidentService
         $updateData->message = $data->message;
         $updateData->status = $defaultStatus;
         $updateData->updatedAt = $data->createdAt;
+        $updateData->serviceUpdates = $data->serviceUpdates;
         $this->incidentUpdateService->create($incident, $updateData);
 
         $this->manager->flush();

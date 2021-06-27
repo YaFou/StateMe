@@ -17,9 +17,6 @@ return static function (FrameworkConfig $config, ContainerConfigurator $containe
     $config->phpErrors()
         ->log(true);
 
-    $config->propertyAccess()
-        ->enabled(true);
-
     if ('test' === $container->env()) {
         $config->test(true)
             ->session()
